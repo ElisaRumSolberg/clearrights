@@ -1,11 +1,27 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-source-serif);
+
+  --color-ink: #13233f;
+  --color-ink-soft: #3b4a63;
+  --color-paper: #f6f3ec;
+  --color-card: #fffdf9;
+  --color-rule: #e3dccd;
+  --color-brass: #9a7433;
+  --color-brass-soft: #f1e8d6;
+  --color-urgent: #8f2d2d;
+  --color-urgent-soft: #f8ebe8;
+  --color-ok: #2f6b4f;
 }
 
 body {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
 }
