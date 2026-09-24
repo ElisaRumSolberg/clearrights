@@ -11,7 +11,7 @@ export function Loading({ t }: { t: Dict }) {
   const steps = t.loadingSteps;
 
   useEffect(() => {
-    const id = setInterval(() => setStep((s) => Math.min(s + 1, steps.length - 1)), 3500);
+    const id = setInterval(() => setStep((s) => Math.min(s + 1, steps.length - 1)), 3000);
     return () => clearInterval(id);
   }, [steps.length]);
 

@@ -40,7 +40,7 @@ const en = {
   privacy: "Sent securely for analysis. Not stored by ClearRights.",
 
   loadingTitle: "Reviewing your letter…",
-  loadingHint: "This usually takes 15–25 seconds.",
+  loadingHint: "This usually takes about 15 seconds.",
   loadingSteps: [
     "Reading the letter",
     "Explaining it in plain language",
@@ -112,7 +112,7 @@ const tr: Dict = {
   privacy: "Analiz için güvenli şekilde gönderilir. ClearRights tarafından saklanmaz.",
 
   loadingTitle: "Mektubunuz inceleniyor…",
-  loadingHint: "Bu genellikle 15–25 saniye sürer.",
+  loadingHint: "Bu genellikle 15 saniye kadar sürer.",
   loadingSteps: [
     "Mektup okunuyor",
     "Sade bir dille açıklanıyor",
@@ -182,7 +182,7 @@ const no: Dict = {
   privacy: "Sendes sikkert til analyse. Lagres ikke av ClearRights.",
 
   loadingTitle: "Går gjennom brevet ditt…",
-  loadingHint: "Dette tar vanligvis 15–25 sekunder.",
+  loadingHint: "Dette tar vanligvis rundt 15 sekunder.",
   loadingSteps: [
     "Leser brevet",
     "Forklarer det med enkle ord",
