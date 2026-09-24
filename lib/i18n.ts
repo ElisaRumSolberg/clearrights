@@ -1,0 +1,229 @@
+// Interface text for the languages we have reviewed translations for.
+// The explanation itself can be in any language the model supports; the
+// interface falls back to English for languages not listed here.
+
+export type Lang = "en" | "tr" | "no";
+
+export type Localized = Record<Lang, string>;
+
+export function langFor(outputLanguage: string): Lang {
+  if (outputLanguage === "Turkish") return "tr";
+  if (outputLanguage.includes("Norwegian")) return "no";
+  return "en";
+}
+
+export const LOCALE: Record<Lang, string> = { en: "en-GB", tr: "tr-TR", no: "nb-NO" };
+
+const en = {
+  badge: "Norway · Legal information, not legal advice",
+  eyebrow: "For students, newcomers and everyone in between",
+  headline: "Official letters should not feel impossible to understand.",
+  lead: "Upload a letter from a landlord, NAV, a debt collector or a public office. ClearRights explains it in your language, finds the deadlines, and shows you where to get help in Norway.",
+  principles: [
+    { title: "Quoted from your letter", text: "Every point links back to the exact sentence it comes from." },
+    { title: "Deadlines calculated, not guessed", text: "“Within 14 days of receipt” becomes a real date." },
+    { title: "Verified Norwegian sources", text: "Authorities and laws come from a checked list, not from the AI." },
+    { title: "Nothing is stored", text: "Your letter is analysed and then discarded." },
+  ],
+  disclaimer: "ClearRights provides general legal information and document explanations. It does not provide legal advice and does not replace a qualified lawyer or official legal service.",
+  genericError: "Something went wrong.",
+
+  formTitle: "Analyse a letter",
+  tabFile: "Upload file or photo",
+  tabText: "Paste text",
+  dropTitle: "Drop your letter here, or click to browse",
+  dropHint: "PDF, or a photo of the letter (JPG, PNG)",
+  dropChange: "Click to choose another file",
+  pastePlaceholder: "Paste the full text of the letter here…",
+  explainIn: "Explain it to me in",
+  submit: "Explain this letter",
+  privacy: "Sent securely for analysis. Not stored by ClearRights.",
+
+  loadingTitle: "Reviewing your letter…",
+  loadingHint: "This usually takes 15–25 seconds.",
+  loadingSteps: [
+    "Reading the letter",
+    "Explaining it in plain language",
+    "Finding dates and deadlines",
+    "Checking every quote against the letter",
+    "Matching verified Norwegian sources",
+  ],
+
+  back: "Analyse another letter",
+  resultTitle: "Your letter, explained",
+  metaType: "Type",
+  metaFrom: "From",
+  metaDated: "Dated",
+  secMeaning: "What this letter means",
+  secDates: "Important dates",
+  secHelp: "Where to get help",
+  secAttention: "Pay attention to",
+  secRequests: "What they are asking you to do",
+  secSteps: "What you can do now",
+  secTerms: "Words in the letter",
+  receivedQuestion: "When did you receive this letter?",
+  daysAgo: (n: number) => `${n} days ago`,
+  today: "Today",
+  tomorrow: "Tomorrow",
+  daysLeft: (n: number) => `${n} days left`,
+  countedFrom: { received: "counted from the date you received it", document_date: "counted from the letter's date" },
+  reasons: {
+    unreadable: "The date in the letter could not be read reliably.",
+    no_period: "The deadline wording could not be converted to a period.",
+    need_received: "Enter the date you received the letter.",
+    no_document_date: "The letter's own date is missing.",
+    unknown_anchor: "Check the letter to see when this period starts.",
+  },
+  estimateNote: "Calculated dates are estimates. If a deadline falls on a weekend or public holiday, check the rules or ask for help.",
+  demoData: "Demo data — these references have not been verified yet.",
+  relevantLaw: "Relevant law",
+  lovdataNote: "Opens on Lovdata, Norway's official law database.",
+  freeAid: "Free legal aid services",
+  stepsDone: (done: number, total: number) => `${done} of ${total} done`,
+  quoteVerified: "Quoted from your letter",
+  quoteUnverified: "Could not find this in the letter — check the original",
+};
+
+export type Dict = typeof en;
+
+const tr: Dict = {
+  badge: "Norveç · Hukuki bilgi, hukuki tavsiye değildir",
+  eyebrow: "Öğrenciler, yeni gelenler ve herkes için",
+  headline: "Resmi mektupları anlamak imkânsız olmamalı.",
+  lead: "Ev sahibinden, NAV'dan, bir inkasso şirketinden ya da bir kamu kurumundan gelen mektubu yükleyin. ClearRights onu sizin dilinizde açıklar, son tarihleri bulur ve Norveç'te nereden yardım alabileceğinizi gösterir.",
+  principles: [
+    { title: "Mektubunuzdan alıntılı", text: "Her madde, dayandığı cümleyi aynen gösterir." },
+    { title: "Son tarihler hesaplanır, tahmin edilmez", text: "“Alındıktan sonra 14 gün içinde” gerçek bir tarihe dönüşür." },
+    { title: "Doğrulanmış Norveç kaynakları", text: "Kurumlar ve kanunlar yapay zekâdan değil, kontrol edilmiş bir listeden gelir." },
+    { title: "Hiçbir şey saklanmaz", text: "Mektubunuz analiz edilir ve ardından silinir." },
+  ],
+  disclaimer: "ClearRights genel hukuki bilgi ve belge açıklamaları sunar. Hukuki tavsiye vermez; bir avukatın ya da resmi hukuki yardım hizmetinin yerini tutmaz.",
+  genericError: "Bir şeyler ters gitti.",
+
+  formTitle: "Mektup analiz et",
+  tabFile: "Dosya veya fotoğraf yükle",
+  tabText: "Metin yapıştır",
+  dropTitle: "Mektubunuzu buraya bırakın ya da seçmek için tıklayın",
+  dropHint: "PDF ya da mektubun fotoğrafı (JPG, PNG)",
+  dropChange: "Başka bir dosya seçmek için tıklayın",
+  pastePlaceholder: "Mektubun tam metnini buraya yapıştırın…",
+  explainIn: "Bana şu dilde açıkla",
+  submit: "Bu mektubu açıkla",
+  privacy: "Analiz için güvenli şekilde gönderilir. ClearRights tarafından saklanmaz.",
+
+  loadingTitle: "Mektubunuz inceleniyor…",
+  loadingHint: "Bu genellikle 15–25 saniye sürer.",
+  loadingSteps: [
+    "Mektup okunuyor",
+    "Sade bir dille açıklanıyor",
+    "Tarihler ve son tarihler bulunuyor",
+    "Her alıntı mektupla karşılaştırılıyor",
+    "Doğrulanmış Norveç kaynakları eşleştiriliyor",
+  ],
+
+  back: "Başka bir mektup analiz et",
+  resultTitle: "Mektubunuz, açıklandı",
+  metaType: "Tür",
+  metaFrom: "Gönderen",
+  metaDated: "Tarih",
+  secMeaning: "Bu mektup ne anlama geliyor",
+  secDates: "Önemli tarihler",
+  secHelp: "Nereden yardım alabilirsiniz",
+  secAttention: "Dikkat edin",
+  secRequests: "Sizden ne istiyorlar",
+  secSteps: "Şimdi ne yapabilirsiniz",
+  secTerms: "Mektuptaki kelimeler",
+  receivedQuestion: "Bu mektubu ne zaman aldınız?",
+  daysAgo: (n) => `${n} gün önce`,
+  today: "Bugün",
+  tomorrow: "Yarın",
+  daysLeft: (n) => `${n} gün kaldı`,
+  countedFrom: { received: "mektubu aldığınız tarihten itibaren", document_date: "mektubun tarihinden itibaren" },
+  reasons: {
+    unreadable: "Mektuptaki tarih güvenilir şekilde okunamadı.",
+    no_period: "Süre ifadesi bir zaman aralığına çevrilemedi.",
+    need_received: "Mektubu aldığınız tarihi girin.",
+    no_document_date: "Mektubun kendi tarihi eksik.",
+    unknown_anchor: "Sürenin ne zaman başladığını mektuptan kontrol edin.",
+  },
+  estimateNote: "Hesaplanan tarihler tahminidir. Son gün hafta sonuna ya da resmi tatile denk gelirse kuralları kontrol edin veya yardım isteyin.",
+  demoData: "Demo verisi — bu kaynaklar henüz doğrulanmadı.",
+  relevantLaw: "İlgili kanun",
+  lovdataNote: "Norveç'in resmi kanun veritabanı Lovdata'da açılır.",
+  freeAid: "Ücretsiz hukuki yardım hizmetleri",
+  stepsDone: (done, total) => `${total} adımdan ${done} tanesi tamamlandı`,
+  quoteVerified: "Mektubunuzdan alıntı",
+  quoteUnverified: "Bu ifade mektupta bulunamadı — aslını kontrol edin",
+};
+
+const no: Dict = {
+  badge: "Norge · Juridisk informasjon, ikke juridisk rådgivning",
+  eyebrow: "For studenter, nyankomne og alle andre",
+  headline: "Offisielle brev skal ikke være umulige å forstå.",
+  lead: "Last opp et brev fra utleier, NAV, et inkassobyrå eller et offentlig kontor. ClearRights forklarer det på ditt språk, finner fristene og viser deg hvor du kan få hjelp i Norge.",
+  principles: [
+    { title: "Sitert fra brevet ditt", text: "Hvert punkt viser nøyaktig hvilken setning det kommer fra." },
+    { title: "Frister beregnes, ikke gjettes", text: "«Innen 14 dager fra mottak» blir en faktisk dato." },
+    { title: "Verifiserte norske kilder", text: "Myndigheter og lover hentes fra en kontrollert liste, ikke fra KI-en." },
+    { title: "Ingenting lagres", text: "Brevet ditt analyseres og slettes deretter." },
+  ],
+  disclaimer: "ClearRights gir generell juridisk informasjon og forklaringer av dokumenter. Tjenesten gir ikke juridisk rådgivning og erstatter ikke en advokat eller offentlig rettshjelp.",
+  genericError: "Noe gikk galt.",
+
+  formTitle: "Analyser et brev",
+  tabFile: "Last opp fil eller bilde",
+  tabText: "Lim inn tekst",
+  dropTitle: "Slipp brevet her, eller klikk for å velge",
+  dropHint: "PDF, eller et bilde av brevet (JPG, PNG)",
+  dropChange: "Klikk for å velge en annen fil",
+  pastePlaceholder: "Lim inn hele teksten i brevet her…",
+  explainIn: "Forklar det for meg på",
+  submit: "Forklar dette brevet",
+  privacy: "Sendes sikkert til analyse. Lagres ikke av ClearRights.",
+
+  loadingTitle: "Går gjennom brevet ditt…",
+  loadingHint: "Dette tar vanligvis 15–25 sekunder.",
+  loadingSteps: [
+    "Leser brevet",
+    "Forklarer det med enkle ord",
+    "Finner datoer og frister",
+    "Sjekker hvert sitat mot brevet",
+    "Finner verifiserte norske kilder",
+  ],
+
+  back: "Analyser et nytt brev",
+  resultTitle: "Brevet ditt, forklart",
+  metaType: "Type",
+  metaFrom: "Fra",
+  metaDated: "Datert",
+  secMeaning: "Hva brevet betyr",
+  secDates: "Viktige datoer",
+  secHelp: "Hvor du kan få hjelp",
+  secAttention: "Vær oppmerksom på",
+  secRequests: "Hva de ber deg om",
+  secSteps: "Hva du kan gjøre nå",
+  secTerms: "Ord i brevet",
+  receivedQuestion: "Når mottok du brevet?",
+  daysAgo: (n) => `for ${n} dager siden`,
+  today: "I dag",
+  tomorrow: "I morgen",
+  daysLeft: (n) => `${n} dager igjen`,
+  countedFrom: { received: "regnet fra datoen du mottok det", document_date: "regnet fra brevets dato" },
+  reasons: {
+    unreadable: "Datoen i brevet kunne ikke leses sikkert.",
+    no_period: "Fristen kunne ikke gjøres om til en periode.",
+    need_received: "Skriv inn datoen du mottok brevet.",
+    no_document_date: "Brevets egen dato mangler.",
+    unknown_anchor: "Sjekk brevet for når fristen begynner å løpe.",
+  },
+  estimateNote: "Beregnede datoer er anslag. Hvis en frist faller på en helg eller helligdag, sjekk reglene eller spør om hjelp.",
+  demoData: "Demodata – disse henvisningene er ikke verifisert ennå.",
+  relevantLaw: "Relevant lov",
+  lovdataNote: "Åpnes på Lovdata, Norges offisielle lovdatabase.",
+  freeAid: "Gratis rettshjelp",
+  stepsDone: (done, total) => `${done} av ${total} gjort`,
+  quoteVerified: "Sitert fra brevet ditt",
+  quoteUnverified: "Fant ikke dette i brevet – sjekk originalen",
+};
+
+export const DICT: Record<Lang, Dict> = { en, tr, no };

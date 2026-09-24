@@ -2,10 +2,14 @@ import type { ExtractedDate } from "./analysis";
 
 // Deadline arithmetic happens here, in code, never in the model.
 
+// basis and reason are codes; the interface translates them (lib/i18n.ts).
 export type ResolvedDeadline =
   | { status: "fixed"; date: Date }
-  | { status: "calculated"; date: Date; basis: string }
-  | { status: "needs_date"; reason: string };
+  | { status: "calculated"; date: Date; basis: "received" | "document_date" }
+  | {
+      status: "needs_date";
+      reason: "unreadable" | "no_period" | "need_received" | "no_document_date" | "unknown_anchor";
+    };
 
 export function parseIsoDate(value: string | null | undefined): Date | null {
   if (!value) return null;
@@ -30,26 +34,24 @@ export function resolveDeadline(
 ): ResolvedDeadline {
   if (!item.is_relative) {
     const date = parseIsoDate(item.absolute_date);
-    return date
-      ? { status: "fixed", date }
-      : { status: "needs_date", reason: "The date in the document could not be read reliably." };
+    return date ? { status: "fixed", date } : { status: "needs_date", reason: "unreadable" };
   }
 
   if (!item.amount || !item.unit) {
-    return { status: "needs_date", reason: "The deadline wording could not be converted to a period." };
+    return { status: "needs_date", reason: "no_period" };
   }
 
   if (item.anchor === "received") {
-    if (!receivedDate) return { status: "needs_date", reason: "Enter the date you received the letter." };
-    return { status: "calculated", date: addPeriod(receivedDate, item.amount, item.unit), basis: "the date you received it" };
+    if (!receivedDate) return { status: "needs_date", reason: "need_received" };
+    return { status: "calculated", date: addPeriod(receivedDate, item.amount, item.unit), basis: "received" };
   }
 
   if (item.anchor === "document_date") {
-    if (!documentDate) return { status: "needs_date", reason: "The letter's own date is missing." };
-    return { status: "calculated", date: addPeriod(documentDate, item.amount, item.unit), basis: "the letter's date" };
+    if (!documentDate) return { status: "needs_date", reason: "no_document_date" };
+    return { status: "calculated", date: addPeriod(documentDate, item.amount, item.unit), basis: "document_date" };
   }
 
-  return { status: "needs_date", reason: "Check the letter to see when this period starts." };
+  return { status: "needs_date", reason: "unknown_anchor" };
 }
 
 export function daysUntil(date: Date, today = new Date()): number {

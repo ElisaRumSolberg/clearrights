@@ -3,11 +3,9 @@
 import { useState } from "react";
 import type { Analysis } from "@/lib/analysis";
 import { daysUntil, parseIsoDate, resolveDeadline, toIsoDate } from "@/lib/deadline";
+import { DICT, LOCALE, type Dict, type Lang } from "@/lib/i18n";
 import { FREE_LEGAL_AID, KNOWLEDGE } from "@/lib/knowledge";
 import { Icon, type IconName } from "./Icon";
-
-const dateFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" });
-const weekdayFormat = new Intl.DateTimeFormat("en-GB", { weekday: "long" });
 
 function Section({ title, icon, children, className = "" }: {
   title: string;
@@ -28,7 +26,7 @@ function Section({ title, icon, children, className = "" }: {
   );
 }
 
-function Citation({ quote, verified }: { quote: string; verified: boolean }) {
+function Citation({ quote, verified, t }: { quote: string; verified: boolean; t: Dict }) {
   return (
     <figure className="mt-2.5 border-l-2 border-brass/50 pl-4">
       <blockquote className="font-serif text-[15px] italic leading-relaxed text-ink-soft break-words">
@@ -38,21 +36,24 @@ function Citation({ quote, verified }: { quote: string; verified: boolean }) {
         className={`mt-1 flex items-center gap-1 text-xs font-medium ${verified ? "text-ok" : "text-urgent"}`}
       >
         <Icon name={verified ? "check" : "alert"} className="h-3.5 w-3.5" />
-        {verified ? "Quoted from your letter" : "Could not find this in the letter — check the original"}
+        {verified ? t.quoteVerified : t.quoteUnverified}
       </figcaption>
     </figure>
   );
 }
 
-function Countdown({ days }: { days: number }) {
-  const label = days < 0 ? `${-days} days ago` : days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days left`;
+function Countdown({ days, t }: { days: number; t: Dict }) {
+  const label = days < 0 ? t.daysAgo(-days) : days === 0 ? t.today : days === 1 ? t.tomorrow : t.daysLeft(days);
   const tone = days <= 7 ? "bg-urgent text-white" : "bg-ink text-white";
   return <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${tone}`}>{label}</span>;
 }
 
-export function Results({ analysis, onReset }: { analysis: Analysis; onReset: () => void }) {
+export function Results({ analysis, lang, onReset }: { analysis: Analysis; lang: Lang; onReset: () => void }) {
   const [receivedDate, setReceivedDate] = useState(toIsoDate(new Date()));
   const [done, setDone] = useState<Set<number>>(new Set());
+  const t = DICT[lang];
+  const dateFormat = new Intl.DateTimeFormat(LOCALE[lang], { day: "numeric", month: "long", year: "numeric" });
+  const weekdayFormat = new Intl.DateTimeFormat(LOCALE[lang], { weekday: "long" });
   const knowledge = KNOWLEDGE[analysis.category];
   const documentDate = parseIsoDate(analysis.document_date);
 
@@ -72,26 +73,26 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
         <div>
           <button onClick={onReset} className="flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-ink">
             <Icon name="arrowLeft" className="h-4 w-4" />
-            Analyse another letter
+            {t.back}
           </button>
           <h1 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            Your letter, explained
+            {t.resultTitle}
           </h1>
         </div>
         <dl className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
           <div>
-            <dt className="text-xs uppercase tracking-wider text-ink-soft">Type</dt>
-            <dd className="font-medium text-ink">{knowledge.label}</dd>
+            <dt className="text-xs uppercase tracking-wider text-ink-soft">{t.metaType}</dt>
+            <dd className="font-medium text-ink">{knowledge.label[lang]}</dd>
           </div>
           {analysis.sender && (
             <div>
-              <dt className="text-xs uppercase tracking-wider text-ink-soft">From</dt>
+              <dt className="text-xs uppercase tracking-wider text-ink-soft">{t.metaFrom}</dt>
               <dd className="font-medium text-ink">{analysis.sender}</dd>
             </div>
           )}
           {documentDate && (
             <div>
-              <dt className="text-xs uppercase tracking-wider text-ink-soft">Dated</dt>
+              <dt className="text-xs uppercase tracking-wider text-ink-soft">{t.metaDated}</dt>
               <dd className="font-medium text-ink">{dateFormat.format(documentDate)}</dd>
             </div>
           )}
@@ -99,7 +100,7 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_370px] lg:items-start">
-        <Section title="What this letter means" icon="file" className="lg:col-start-1">
+        <Section title={t.secMeaning} icon="file" className="lg:col-start-1">
           <p className="text-[17px] leading-relaxed text-ink">{analysis.summary}</p>
         </Section>
 
@@ -108,12 +109,12 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
             <section className="overflow-hidden rounded-xl border border-urgent/25 bg-card">
               <div className="flex items-center gap-2.5 bg-urgent-soft px-5 py-3.5">
                 <Icon name="calendar" className="h-5 w-5 text-urgent" />
-                <h2 className="font-serif text-lg font-semibold text-urgent">Important dates</h2>
+                <h2 className="font-serif text-lg font-semibold text-urgent">{t.secDates}</h2>
               </div>
               <div className="p-5">
                 {needsReceivedDate && (
                   <label className="mb-5 block rounded-lg bg-paper p-3 text-sm text-ink">
-                    <span className="font-medium">When did you receive this letter?</span>
+                    <span className="font-medium">{t.receivedQuestion}</span>
                     <input
                       type="date"
                       value={receivedDate}
@@ -127,29 +128,26 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
                     <li key={i} className="py-4 first:pt-0 last:pb-0">
                       <p className="text-sm font-semibold text-ink-soft">{item.description}</p>
                       {resolved.status === "needs_date" ? (
-                        <p className="mt-1 font-medium text-urgent">{resolved.reason}</p>
+                        <p className="mt-1 font-medium text-urgent">{t.reasons[resolved.reason]}</p>
                       ) : (
                         <>
                           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                             <p className="font-serif text-2xl font-semibold text-ink">
                               {dateFormat.format(resolved.date)}
                             </p>
-                            <Countdown days={daysUntil(resolved.date)} />
+                            <Countdown days={daysUntil(resolved.date)} t={t} />
                           </div>
                           <p className="text-sm text-ink-soft">
                             {weekdayFormat.format(resolved.date)}
-                            {resolved.status === "calculated" && ` · counted from ${resolved.basis}`}
+                            {resolved.status === "calculated" && ` · ${t.countedFrom[resolved.basis]}`}
                           </p>
                         </>
                       )}
-                      <Citation quote={item.source_quote} verified={item.quote_verified} />
+                      <Citation quote={item.source_quote} verified={item.quote_verified} t={t} />
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 text-xs leading-relaxed text-ink-soft">
-                  Calculated dates are estimates. If a deadline falls on a weekend or public holiday, check the rules
-                  or ask for help.
-                </p>
+                <p className="mt-4 text-xs leading-relaxed text-ink-soft">{t.estimateNote}</p>
               </div>
             </section>
           )}
@@ -157,13 +155,11 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
           <section className="overflow-hidden rounded-xl border border-ink/15 bg-card">
             <div className="flex items-center gap-2.5 bg-ink px-5 py-3.5 text-white">
               <Icon name="landmark" className="h-5 w-5 text-brass-soft" />
-              <h2 className="font-serif text-lg font-semibold">Where to get help</h2>
+              <h2 className="font-serif text-lg font-semibold">{t.secHelp}</h2>
             </div>
             <div className="p-5">
               {!knowledge.verified && (
-                <p className="mb-4 rounded-md bg-brass-soft px-3 py-2 text-xs font-medium text-brass">
-                  Demo data — these references have not been verified yet.
-                </p>
+                <p className="mb-4 rounded-md bg-brass-soft px-3 py-2 text-xs font-medium text-brass">{t.demoData}</p>
               )}
               {knowledge.authority && (
                 <a
@@ -176,12 +172,12 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
                     {knowledge.authority.name}
                     <Icon name="external" className="h-4 w-4 text-ink-soft group-hover:text-brass" />
                   </p>
-                  <p className="mt-1 text-sm leading-snug text-ink-soft">{knowledge.authority.description}</p>
+                  <p className="mt-1 text-sm leading-snug text-ink-soft">{knowledge.authority.description[lang]}</p>
                 </a>
               )}
               {knowledge.laws.length > 0 && (
                 <div className="mt-5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Relevant law</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-ink-soft">{t.relevantLaw}</p>
                   <ul className="mt-2 space-y-2">
                     {knowledge.laws.map((law) => (
                       <li key={law.url}>
@@ -189,31 +185,38 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
                           href={law.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="flex items-baseline gap-2 hover:text-brass"
+                          className="flex flex-wrap items-baseline gap-x-2 hover:text-brass"
                         >
                           <span className="font-serif font-semibold text-ink">
                             {law.name} {law.section}
                           </span>
-                          <span className="text-sm text-ink-soft">{law.topic}</span>
+                          <span className="text-sm text-ink-soft">{law.topic[lang]}</span>
                         </a>
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-2 text-xs text-ink-soft">Opens on Lovdata, Norway&apos;s official law database.</p>
+                  <p className="mt-2 text-xs text-ink-soft">{t.lovdataNote}</p>
                 </div>
               )}
               {knowledge.typical_deadline_note && (
-                <p className="mt-4 rounded-md bg-paper px-3 py-2 text-sm text-ink">{knowledge.typical_deadline_note}</p>
+                <p className="mt-4 rounded-md bg-paper px-3 py-2 text-sm text-ink">
+                  {knowledge.typical_deadline_note[lang]}
+                </p>
               )}
               <details className="mt-5 border-t border-rule pt-4">
-                <summary className="cursor-pointer text-sm font-semibold text-ink">Free legal aid services</summary>
+                <summary className="cursor-pointer text-sm font-semibold text-ink">{t.freeAid}</summary>
                 <ul className="mt-3 space-y-3">
                   {FREE_LEGAL_AID.map((s) => (
                     <li key={s.url} className="text-sm">
-                      <a href={s.url} target="_blank" rel="noreferrer" className="font-medium text-ink underline decoration-brass/50 underline-offset-2 hover:text-brass">
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-medium text-ink underline decoration-brass/50 underline-offset-2 hover:text-brass"
+                      >
                         {s.name}
                       </a>
-                      <p className="text-ink-soft">{s.description}</p>
+                      <p className="text-ink-soft">{s.description[lang]}</p>
                     </li>
                   ))}
                 </ul>
@@ -224,12 +227,12 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
 
         <div className="space-y-5 lg:col-start-1">
           {analysis.important_points.length > 0 && (
-            <Section title="Pay attention to" icon="alert">
+            <Section title={t.secAttention} icon="alert">
               <ul className="space-y-5">
                 {analysis.important_points.map((p, i) => (
                   <li key={i}>
                     <p className="text-ink">{p.text}</p>
-                    <Citation quote={p.source_quote} verified={p.quote_verified} />
+                    <Citation quote={p.source_quote} verified={p.quote_verified} t={t} />
                   </li>
                 ))}
               </ul>
@@ -237,12 +240,12 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
           )}
 
           {analysis.sender_request.length > 0 && (
-            <Section title="What they are asking you to do" icon="mail">
+            <Section title={t.secRequests} icon="mail">
               <ul className="space-y-5">
                 {analysis.sender_request.map((r, i) => (
                   <li key={i}>
                     <p className="text-ink">{r.text}</p>
-                    <Citation quote={r.source_quote} verified={r.quote_verified} />
+                    <Citation quote={r.source_quote} verified={r.quote_verified} t={t} />
                   </li>
                 ))}
               </ul>
@@ -250,14 +253,12 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
           )}
 
           {analysis.next_steps.length > 0 && (
-            <Section title="What you can do now" icon="checklist">
-              <p className="-mt-2 mb-4 text-sm text-ink-soft">
-                {done.size} of {analysis.next_steps.length} done
-              </p>
+            <Section title={t.secSteps} icon="checklist">
+              <p className="-mt-2 mb-4 text-sm text-ink-soft">{t.stepsDone(done.size, analysis.next_steps.length)}</p>
               <ul className="space-y-1">
                 {analysis.next_steps.map((step, i) => (
                   <li key={i}>
-                    <label className="flex cursor-pointer items-start gap-3 rounded-lg p-2 -mx-2 hover:bg-paper">
+                    <label className="-mx-2 flex cursor-pointer items-start gap-3 rounded-lg p-2 hover:bg-paper">
                       <input
                         type="checkbox"
                         checked={done.has(i)}
@@ -280,12 +281,12 @@ export function Results({ analysis, onReset }: { analysis: Analysis; onReset: ()
           )}
 
           {analysis.terms.length > 0 && (
-            <Section title="Words in the letter" icon="book">
+            <Section title={t.secTerms} icon="book">
               <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
-                {analysis.terms.map((t, i) => (
+                {analysis.terms.map((term, i) => (
                   <div key={i}>
-                    <dt className="font-serif font-semibold italic text-ink">{t.term}</dt>
-                    <dd className="mt-0.5 text-sm leading-snug text-ink-soft">{t.explanation}</dd>
+                    <dt className="font-serif font-semibold italic text-ink">{term.term}</dt>
+                    <dd className="mt-0.5 text-sm leading-snug text-ink-soft">{term.explanation}</dd>
                   </div>
                 ))}
               </dl>
