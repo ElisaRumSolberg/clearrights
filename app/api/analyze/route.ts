@@ -7,7 +7,20 @@ import { quoteAppearsIn } from "@/lib/verifyQuote";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+// Two ways to reach Gemini: an AI Studio API key, or Vertex AI with Google Cloud
+// login (gcloud auth application-default login) when no key is set.
+const USE_VERTEX = !process.env.GEMINI_API_KEY;
+const MODEL = process.env.GEMINI_MODEL || (USE_VERTEX ? "gemini-3-flash-preview" : "gemini-2.5-flash");
+
+function createClient(): GoogleGenAI | null {
+  if (!USE_VERTEX) return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  if (!process.env.GOOGLE_CLOUD_PROJECT) return null;
+  return new GoogleGenAI({
+    vertexai: true,
+    project: process.env.GOOGLE_CLOUD_PROJECT,
+    location: process.env.GOOGLE_CLOUD_LOCATION || "global",
+  });
+}
 // Vercel rejects request bodies above ~4.5 MB; the browser downscales photos to stay under this.
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
 const ACCEPTED_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
@@ -17,8 +30,9 @@ function error(message: string, status: number) {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.GEMINI_API_KEY) {
-    return error("Server is missing GEMINI_API_KEY.", 500);
+  const ai = createClient();
+  if (!ai) {
+    return error("Server is missing GEMINI_API_KEY or GOOGLE_CLOUD_PROJECT.", 500);
   }
 
   const form = await request.formData();
@@ -43,7 +57,6 @@ export async function POST(request: Request) {
   }
   parts.push({ text: "Analyze this document." });
 
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   let model: ModelAnalysis;
   try {
     const response = await ai.models.generateContent({

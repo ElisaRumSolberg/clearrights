@@ -26,6 +26,10 @@ Dates: list every deadline and appointment.
   anchor="received" when the period runs from when the letter was received or delivered,
   "document_date" when it runs from the letter's own date, otherwise "other".
 
+Important points: if the letter says what happens when the reader does nothing or misses a deadline
+(e.g. the claim is considered accepted, costs increase, the case goes further), that MUST be the first
+important point.
+
 Quotes: every source_quote must be a sentence copied character-for-character from the document.
 If you cannot quote it, do not include the item.
 
