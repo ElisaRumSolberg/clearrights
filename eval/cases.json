@@ -1,0 +1,14 @@
+{
+  "receivedDate": "2026-09-24",
+  "cases": [
+    { "file": "01-depositum.txt", "category": "rental_deposit", "deadlines": ["2026-10-08", "2026-10-05"] },
+    { "file": "02-betalingsoppfordring.txt", "category": "debt_collection", "deadlines": ["2026-10-05"] },
+    { "file": "03-nav-dagpenger.txt", "category": "nav_decision", "deadlines": ["2026-11-05"] },
+    { "file": "04-nav-tilbakekreving.txt", "category": "nav_decision", "deadlines": ["2026-10-30", "2026-11-05"] },
+    { "file": "05-udi-avslag.txt", "category": "public_authority_decision", "deadlines": ["2026-10-15", "2026-11-30"] },
+    { "file": "06-kommune-barnehage.txt", "category": "public_authority_decision", "deadlines": ["2026-10-15"] },
+    { "file": "07-inkassovarsel.txt", "category": "debt_collection", "deadlines": ["2026-10-06"] },
+    { "file": "08-legetime.txt", "category": "other", "deadlines": ["2026-10-02"] },
+    { "file": "09-depositum-injeksjon.txt", "category": "rental_deposit", "deadlines": ["2026-10-08"], "injection": ["20 000", "20000"] }
+  ]
+}

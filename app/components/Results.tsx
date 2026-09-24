@@ -4,7 +4,9 @@ import { useState } from "react";
 import type { Analysis } from "@/lib/analysis";
 import { daysUntil, parseIsoDate, resolveDeadline, toIsoDate } from "@/lib/deadline";
 import { DICT, LOCALE, type Dict, type Lang } from "@/lib/i18n";
+import { deadlineIcs, downloadFile } from "@/lib/ics";
 import { FREE_LEGAL_AID, KNOWLEDGE } from "@/lib/knowledge";
+import { DraftPanel } from "./DraftPanel";
 import { Icon, type IconName } from "./Icon";
 
 function Section({ title, icon, children, className = "" }: {
@@ -48,7 +50,12 @@ function Countdown({ days, t }: { days: number; t: Dict }) {
   return <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${tone}`}>{label}</span>;
 }
 
-export function Results({ analysis, lang, onReset }: { analysis: Analysis; lang: Lang; onReset: () => void }) {
+export function Results({ analysis, lang, language, onReset }: {
+  analysis: Analysis;
+  lang: Lang;
+  language: string;
+  onReset: () => void;
+}) {
   const [receivedDate, setReceivedDate] = useState(toIsoDate(new Date()));
   const [done, setDone] = useState<Set<number>>(new Set());
   const t = DICT[lang];
@@ -66,16 +73,41 @@ export function Results({ analysis, lang, onReset }: { analysis: Analysis; lang:
       return ta - tb;
     });
   const needsReceivedDate = analysis.dates.some((d) => d.is_relative && d.anchor === "received");
+  // The reply must meet the response/appeal deadline, not e.g. a payout date.
+  const known = deadlines.filter((d) => d.resolved.status !== "needs_date");
+  const firstDeadline = (
+    known.find((d) => d.item.kind === "response" || d.item.kind === "appeal") ??
+    known.find((d) => d.item.kind === "payment") ??
+    known[0]
+  )?.resolved;
+  const draftDeadline = firstDeadline && firstDeadline.status !== "needs_date" ? toIsoDate(firstDeadline.date) : null;
 
   return (
     <div>
+      <div className="mb-6 hidden border-b border-ink pb-4 print:block">
+        <p className="font-serif text-2xl font-semibold text-ink">ClearRights — {t.printTitle}</p>
+        <p className="mt-1 text-sm text-ink-soft">
+          {t.printMeta(dateFormat.format(new Date()))}
+          {needsReceivedDate && ` ${t.receivedOn(dateFormat.format(parseIsoDate(receivedDate) ?? new Date()))}.`}
+        </p>
+      </div>
+
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <button onClick={onReset} className="flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-ink">
-            <Icon name="arrowLeft" className="h-4 w-4" />
-            {t.back}
-          </button>
-          <h1 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 print:hidden">
+            <button onClick={onReset} className="flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-ink">
+              <Icon name="arrowLeft" className="h-4 w-4" />
+              {t.back}
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-ink"
+            >
+              <Icon name="file" className="h-4 w-4" />
+              {t.print}
+            </button>
+          </div>
+          <h1 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl print:hidden">
             {t.resultTitle}
           </h1>
         </div>
@@ -141,6 +173,24 @@ export function Results({ analysis, lang, onReset }: { analysis: Analysis; lang:
                             {weekdayFormat.format(resolved.date)}
                             {resolved.status === "calculated" && ` · ${t.countedFrom[resolved.basis]}`}
                           </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              downloadFile(
+                                `deadline-${toIsoDate(resolved.date)}.ics`,
+                                deadlineIcs(
+                                  resolved.date,
+                                  `${item.description} (${analysis.sender || "ClearRights"})`,
+                                  `${t.calendarDetails}\n"${item.source_quote}"`,
+                                ),
+                                "text/calendar",
+                              )
+                            }
+                            className="mt-2 flex items-center gap-1.5 rounded-md border border-rule px-2.5 py-1 text-xs font-medium text-ink hover:border-brass print:hidden"
+                          >
+                            <Icon name="calendar" className="h-3.5 w-3.5 text-brass" />
+                            {t.addToCalendar}
+                          </button>
                         </>
                       )}
                       <Citation quote={item.source_quote} verified={item.quote_verified} t={t} />
@@ -279,6 +329,17 @@ export function Results({ analysis, lang, onReset }: { analysis: Analysis; lang:
               </ul>
             </Section>
           )}
+
+          <Section title={t.secDraft} icon="mail" className="print:hidden">
+            <DraftPanel
+              t={t}
+              language={language}
+              category={analysis.category}
+              sender={analysis.sender}
+              documentText={analysis.document_text}
+              deadline={draftDeadline}
+            />
+          </Section>
 
           {analysis.terms.length > 0 && (
             <Section title={t.secTerms} icon="book">

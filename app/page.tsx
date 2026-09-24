@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Analysis } from "@/lib/analysis";
 import { DICT, langFor, type Lang } from "@/lib/i18n";
 import { prepareFile } from "@/lib/image";
+import { SAMPLES } from "@/lib/samples";
 import { Icon, type IconName } from "./components/Icon";
 import { Loading } from "./components/Loading";
 import { Results } from "./components/Results";
@@ -13,7 +14,7 @@ const PRINCIPLE_ICONS: IconName[] = ["file", "calendar", "landmark", "lock"];
 
 export default function Home() {
   const [language, setLanguage] = useState("English");
-  const [result, setResult] = useState<{ analysis: Analysis; lang: Lang } | null>(null);
+  const [result, setResult] = useState<{ analysis: Analysis; lang: Lang; language: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,8 +39,8 @@ export default function Home() {
 
       const res = await fetch("/api/analyze", { method: "POST", body });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? t.genericError);
-      setResult({ analysis: data, lang: langFor(language) });
+      if (!res.ok) throw new Error(res.status === 429 ? t.rateLimited : (data.error ?? t.genericError));
+      setResult({ analysis: data, lang: langFor(language), language });
     } catch (err) {
       setError(err instanceof Error ? err.message : t.genericError);
     } finally {
@@ -49,7 +50,7 @@ export default function Home() {
 
   return (
     <>
-      <header className="border-b border-rule bg-card/80 backdrop-blur">
+      <header className="border-b border-rule bg-card/80 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
           <button
             onClick={() => setResult(null)}
@@ -67,7 +68,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12 print:max-w-none print:p-0">
         {error && (
           <p role="alert" className="mb-6 flex items-start gap-2 rounded-lg border border-urgent/30 bg-urgent-soft px-4 py-3 text-sm text-urgent">
             <Icon name="alert" className="mt-0.5 h-4 w-4 shrink-0" />
@@ -78,7 +79,12 @@ export default function Home() {
         {loading ? (
           <Loading t={t} />
         ) : result ? (
-          <Results analysis={result.analysis} lang={result.lang} onReset={() => setResult(null)} />
+          <Results
+            analysis={result.analysis}
+            lang={result.lang}
+            language={result.language}
+            onReset={() => setResult(null)}
+          />
         ) : (
           <section className="grid items-start gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
             <div className="lg:pt-6">
@@ -87,6 +93,23 @@ export default function Home() {
                 {t.headline}
               </h1>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">{t.lead}</p>
+              <div className="mt-6 rounded-xl border border-brass/30 bg-brass-soft/60 p-4">
+                <p className="text-sm font-semibold text-ink">{t.trySample}</p>
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  {(["deposit", "debt"] as const).map((id) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => analyze({ file: null, text: SAMPLES[id] })}
+                      className="flex items-center gap-2 rounded-lg border border-rule bg-card px-3 py-2 text-left text-sm font-medium text-ink shadow-sm transition hover:border-brass"
+                    >
+                      <Icon name="file" className="h-4 w-4 shrink-0 text-brass" />
+                      {t.samples[id]}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-ink-soft">{t.sampleNote}</p>
+              </div>
               <ul className="mt-8 grid gap-5 sm:grid-cols-2">
                 {t.principles.map((p, i) => (
                   <li key={i} className="flex gap-3">
@@ -101,7 +124,12 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            <UploadForm t={t} language={language} onLanguageChange={setLanguage} onSubmit={analyze} />
+            <UploadForm
+              t={t}
+              language={language}
+              onLanguageChange={setLanguage}
+              onSubmit={analyze}
+            />
           </section>
         )}
       </main>

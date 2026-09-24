@@ -138,6 +138,7 @@ export function UploadForm({ t, language, onLanguageChange, onSubmit }: Props) {
         <Icon name="lock" className="h-3.5 w-3.5" />
         {t.privacy}
       </p>
+
     </form>
   );
 }

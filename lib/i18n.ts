@@ -82,6 +82,40 @@ const en = {
   stepsDone: (done: number, total: number) => `${done} of ${total} done`,
   quoteVerified: "Quoted from your letter",
   quoteUnverified: "Could not find this in the letter — check the original",
+  trySample: "No letter at hand? Try a sample:",
+  sampleNote: "Fictional letters, written in Norwegian.",
+  samples: { deposit: "Deposit claim from a landlord", debt: "Payment demand from a debt collector" },
+  rateLimited: "Too many requests. Please wait a minute and try again.",
+
+  addToCalendar: "Add to calendar",
+  calendarDetails: "Deadline found by ClearRights in your letter:",
+
+  print: "Print or save as PDF",
+  printTitle: "Letter summary for a legal aid appointment",
+  printMeta: (date: string) => `Prepared with ClearRights on ${date}. Bring the original letter with you.`,
+  receivedOn: (date: string) => `Received on ${date}`,
+
+  secDraft: "Reply to the sender",
+  draftIntro: "Get a polite draft in Norwegian that you can edit and send. You will also see what it says in your language.",
+  draftPurpose: "What do you want to say?",
+  purposes: {
+    object: "I disagree and want to object",
+    more_info: "I need more information or documents",
+    more_time: "I need more time",
+    payment_plan: "I want a payment plan",
+  },
+  draftExtra: "Anything to add? (optional)",
+  draftExtraPlaceholder: "For example: the scratches on the floor were already there when I moved in.",
+  draftButton: "Write draft",
+  draftLoading: "Writing your draft…",
+  draftNorwegian: "Draft in Norwegian",
+  draftTranslation: "What it says",
+  draftSubject: "Subject",
+  copy: "Copy",
+  copied: "Copied",
+  draftWarning: "This is a draft, not legal advice. Read it before sending, fill in the parts in [brackets], and keep a copy of what you send.",
+  draftAgain: "Write a different draft",
+  draftError: "The draft could not be written. Please try again.",
 };
 
 export type Dict = typeof en;
@@ -154,6 +188,40 @@ const tr: Dict = {
   stepsDone: (done, total) => `${total} adımdan ${done} tanesi tamamlandı`,
   quoteVerified: "Mektubunuzdan alıntı",
   quoteUnverified: "Bu ifade mektupta bulunamadı — aslını kontrol edin",
+  trySample: "Elinizde mektup yok mu? Bir örnekle deneyin:",
+  sampleNote: "Norveççe yazılmış, kurgusal mektuplar.",
+  samples: { deposit: "Ev sahibinden depozito talebi", debt: "İnkasso şirketinden ödeme talebi" },
+  rateLimited: "Çok fazla istek gönderildi. Lütfen bir dakika bekleyip tekrar deneyin.",
+
+  addToCalendar: "Takvime ekle",
+  calendarDetails: "ClearRights'ın mektubunuzda bulduğu son tarih:",
+
+  print: "Yazdır veya PDF olarak kaydet",
+  printTitle: "Hukuki yardım görüşmesi için mektup özeti",
+  printMeta: (date) => `ClearRights ile ${date} tarihinde hazırlandı. Mektubun aslını da yanınızda götürün.`,
+  receivedOn: (date) => `Alındığı tarih: ${date}`,
+
+  secDraft: "Gönderene cevap yazın",
+  draftIntro: "Düzenleyip gönderebileceğiniz kibar bir Norveççe taslak alın. Ne yazdığını kendi dilinizde de göreceksiniz.",
+  draftPurpose: "Ne söylemek istiyorsunuz?",
+  purposes: {
+    object: "Katılmıyorum, itiraz etmek istiyorum",
+    more_info: "Daha fazla bilgi veya belge istiyorum",
+    more_time: "Daha fazla süreye ihtiyacım var",
+    payment_plan: "Taksitle ödemek istiyorum",
+  },
+  draftExtra: "Eklemek istediğiniz bir şey var mı? (isteğe bağlı)",
+  draftExtraPlaceholder: "Örneğin: Parkedeki çizikler ben taşınmadan önce de vardı.",
+  draftButton: "Taslağı yaz",
+  draftLoading: "Taslağınız yazılıyor…",
+  draftNorwegian: "Norveççe taslak",
+  draftTranslation: "Ne diyor",
+  draftSubject: "Konu",
+  copy: "Kopyala",
+  copied: "Kopyalandı",
+  draftWarning: "Bu bir taslaktır, hukuki tavsiye değildir. Göndermeden önce okuyun, [köşeli parantez] içindeki yerleri doldurun ve gönderdiğinizin bir kopyasını saklayın.",
+  draftAgain: "Farklı bir taslak yaz",
+  draftError: "Taslak yazılamadı. Lütfen tekrar deneyin.",
 };
 
 const no: Dict = {
@@ -224,6 +292,40 @@ const no: Dict = {
   stepsDone: (done, total) => `${done} av ${total} gjort`,
   quoteVerified: "Sitert fra brevet ditt",
   quoteUnverified: "Fant ikke dette i brevet – sjekk originalen",
+  trySample: "Har du ikke et brev for hånden? Prøv et eksempel:",
+  sampleNote: "Oppdiktede brev, skrevet på norsk.",
+  samples: { deposit: "Depositumskrav fra utleier", debt: "Betalingsoppfordring fra inkassobyrå" },
+  rateLimited: "For mange forespørsler. Vent et minutt og prøv igjen.",
+
+  addToCalendar: "Legg til i kalender",
+  calendarDetails: "Frist som ClearRights fant i brevet ditt:",
+
+  print: "Skriv ut eller lagre som PDF",
+  printTitle: "Sammendrag av brevet til et møte med rettshjelp",
+  printMeta: (date) => `Laget med ClearRights ${date}. Ta med originalbrevet.`,
+  receivedOn: (date) => `Mottatt ${date}`,
+
+  secDraft: "Svar avsenderen",
+  draftIntro: "Få et høflig utkast på norsk som du kan redigere og sende.",
+  draftPurpose: "Hva vil du si?",
+  purposes: {
+    object: "Jeg er uenig og vil protestere",
+    more_info: "Jeg trenger mer informasjon eller dokumentasjon",
+    more_time: "Jeg trenger mer tid",
+    payment_plan: "Jeg ønsker en nedbetalingsplan",
+  },
+  draftExtra: "Noe du vil legge til? (valgfritt)",
+  draftExtraPlaceholder: "For eksempel: Ripene i gulvet var der allerede da jeg flyttet inn.",
+  draftButton: "Skriv utkast",
+  draftLoading: "Skriver utkastet…",
+  draftNorwegian: "Utkast på norsk",
+  draftTranslation: "Hva det betyr",
+  draftSubject: "Emne",
+  copy: "Kopier",
+  copied: "Kopiert",
+  draftWarning: "Dette er et utkast, ikke juridisk rådgivning. Les det før du sender, fyll inn feltene i [klammer], og ta vare på en kopi av det du sender.",
+  draftAgain: "Skriv et annet utkast",
+  draftError: "Utkastet kunne ikke skrives. Prøv igjen.",
 };
 
 export const DICT: Record<Lang, Dict> = { en, tr, no };
