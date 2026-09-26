@@ -5,8 +5,9 @@ import type { Localized } from "./i18n";
 // The model only picks a category key. Every authority, law reference and URL
 // shown to the user comes from this file, never from the model.
 //
-// Before the demo: open every URL, check every section number against Lovdata,
-// then flip `verified` to true. Unverified entries render with a warning badge.
+// Every section, URL and authority below was checked by hand on 2026-09-25.
+// When adding or changing an entry, set `verified: false` until it has been
+// checked again; unverified entries render with a warning badge.
 
 export type LawRef = {
   name: string;
@@ -93,7 +94,7 @@ export const KNOWLEDGE = {
       },
     ],
     typical_deadline_note: null,
-    verified: false,
+    verified: true,
   },
   debt_collection: {
     label: { en: "Debt collection", tr: "Borç tahsilatı (inkasso)", no: "Inkasso" },
@@ -102,9 +103,9 @@ export const KNOWLEDGE = {
     authority: {
       name: "Forbrukerrådet",
       description: {
-        en: "The Norwegian Consumer Council gives free guidance on consumer and debt collection issues.",
-        tr: "Norveç Tüketici Konseyi, tüketici ve borç tahsilatı konularında ücretsiz rehberlik verir.",
-        no: "Forbrukerrådet gir gratis veiledning om forbruker- og inkassosaker.",
+        en: "The Norwegian Consumer Council gives consumers free information and guidance on debt collection, including how to object to a claim. Complaints about a debt collector's conduct can go to Finansklagenemnda Inkasso.",
+        tr: "Norveç Tüketici Konseyi, tüketicilere inkasso konusunda, bir talebe nasıl itiraz edileceği dahil, ücretsiz bilgi ve rehberlik sağlar. Bir inkasso şirketinin davranışıyla ilgili şikâyetler Finansklagenemnda Inkasso'ya yapılabilir.",
+        no: "Forbrukerrådet gir forbrukere gratis informasjon og veiledning om inkasso, blant annet om hvordan du protesterer mot et krav. Klager på et inkassobyrås opptreden kan sendes til Finansklagenemnda Inkasso.",
       },
       url: "https://www.forbrukerradet.no",
     },
@@ -131,7 +132,7 @@ export const KNOWLEDGE = {
       },
     ],
     typical_deadline_note: null,
-    verified: false,
+    verified: true,
   },
   nav_decision: {
     label: { en: "NAV decision", tr: "NAV kararı", no: "Vedtak fra NAV" },
@@ -150,19 +151,20 @@ export const KNOWLEDGE = {
         name: "Folketrygdloven",
         section: "§ 21-12",
         topic: {
-          en: "Appeal deadline for NAV decisions",
-          tr: "NAV kararlarına itiraz süresi",
-          no: "Klagefrist for vedtak fra NAV",
+          en: "Appeals in National Insurance cases",
+          tr: "Sosyal güvenlik (folketrygd) davalarında itiraz",
+          no: "Klage og anke i trygdesaker",
         },
         url: "https://lovdata.no/lov/1997-02-28-19/§21-12",
       },
     ],
+    // NAV: "Fristen varierer etter hva slags sak det er" — never state one deadline for all NAV decisions.
     typical_deadline_note: {
-      en: "The appeal deadline for NAV decisions is usually 6 weeks.",
-      tr: "NAV kararlarına itiraz süresi genellikle 6 haftadır.",
-      no: "Klagefristen for vedtak fra NAV er vanligvis seks uker.",
+      en: "The appeal deadline depends on the decision. For many decisions under the National Insurance Act it is 6 weeks; for some NAV decisions it is 3 weeks. The exact deadline is always stated in your decision letter.",
+      tr: "İtiraz süresi karara göre değişir. Folketrygdloven kapsamındaki birçok kararda süre 6 haftadır; bazı NAV kararlarında ise 3 haftadır. Kesin itiraz süresi her zaman karar mektubunuzda yazar.",
+      no: "Klagefristen avhenger av vedtaket. For mange vedtak etter folketrygdloven er den seks uker, for noen NAV-vedtak er den tre uker. Den nøyaktige fristen står alltid i vedtaket du har fått.",
     },
-    verified: false,
+    verified: true,
   },
   public_authority_decision: {
     label: {
@@ -190,7 +192,7 @@ export const KNOWLEDGE = {
       tr: "İdari kararlara genel itiraz süresi genellikle 3 haftadır.",
       no: "Den generelle klagefristen for forvaltningsvedtak er vanligvis tre uker.",
     },
-    verified: false,
+    verified: true,
   },
   other: {
     label: { en: "Other", tr: "Diğer", no: "Annet" },

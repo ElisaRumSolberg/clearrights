@@ -116,6 +116,14 @@ const en = {
   draftWarning: "This is a draft, not legal advice. Read it before sending, fill in the parts in [brackets], and keep a copy of what you send.",
   draftAgain: "Write a different draft",
   draftError: "The draft could not be written. Please try again.",
+  secTrust: "Why you can trust this",
+  trustAi: "The explanation is written by AI (Google Gemini). It can make mistakes, so every point shows the sentence it is based on.",
+  trustQuotes: (ok: number, total: number) => `${ok} of ${total} quotes were found word-for-word in your letter.`,
+  trustQuotesMissing: "Some quotes could not be found. Check those points against the original letter.",
+  trustDeadlines: "Dates are calculated by ClearRights from the letter's wording, not by the AI.",
+  trustSourcesVerified: "Authorities and laws come from a list we checked by hand. The AI only picks the type of letter.",
+  trustSourcesUnverified: "Authorities and laws come from a fixed list, not from the AI. This list has not been verified yet.",
+  trustInjection: "Instructions hidden inside a letter are ignored.",
 };
 
 export type Dict = typeof en;
@@ -222,6 +230,14 @@ const tr: Dict = {
   draftWarning: "Bu bir taslaktır, hukuki tavsiye değildir. Göndermeden önce okuyun, [köşeli parantez] içindeki yerleri doldurun ve gönderdiğinizin bir kopyasını saklayın.",
   draftAgain: "Farklı bir taslak yaz",
   draftError: "Taslak yazılamadı. Lütfen tekrar deneyin.",
+  secTrust: "Bu sonuca neden güvenebilirsiniz",
+  trustAi: "Açıklamayı yapay zekâ (Google Gemini) yazar. Hata yapabilir; bu yüzden her madde dayandığı cümleyi gösterir.",
+  trustQuotes: (ok, total) => `${total} alıntının ${ok} tanesi mektubunuzda kelimesi kelimesine bulundu.`,
+  trustQuotesMissing: "Bazı alıntılar bulunamadı. O maddeleri mektubun aslıyla karşılaştırın.",
+  trustDeadlines: "Tarihleri yapay zekâ değil, ClearRights mektuptaki ifadeden hesaplar.",
+  trustSourcesVerified: "Kurumlar ve kanunlar elle kontrol ettiğimiz bir listeden gelir. Yapay zekâ yalnızca mektubun türünü seçer.",
+  trustSourcesUnverified: "Kurumlar ve kanunlar yapay zekâdan değil, sabit bir listeden gelir. Bu liste henüz doğrulanmadı.",
+  trustInjection: "Mektubun içine gizlenmiş talimatlar görmezden gelinir.",
 };
 
 const no: Dict = {
@@ -326,6 +342,14 @@ const no: Dict = {
   draftWarning: "Dette er et utkast, ikke juridisk rådgivning. Les det før du sender, fyll inn feltene i [klammer], og ta vare på en kopi av det du sender.",
   draftAgain: "Skriv et annet utkast",
   draftError: "Utkastet kunne ikke skrives. Prøv igjen.",
+  secTrust: "Hvorfor du kan stole på dette",
+  trustAi: "Forklaringen er skrevet av KI (Google Gemini). Den kan ta feil, derfor viser hvert punkt setningen det bygger på.",
+  trustQuotes: (ok, total) => `${ok} av ${total} sitater ble funnet ordrett i brevet ditt.`,
+  trustQuotesMissing: "Noen sitater ble ikke funnet. Sjekk disse punktene mot originalbrevet.",
+  trustDeadlines: "Datoene beregnes av ClearRights ut fra ordlyden i brevet, ikke av KI-en.",
+  trustSourcesVerified: "Myndigheter og lover hentes fra en liste vi har kontrollert manuelt. KI-en velger bare hvilken type brev det er.",
+  trustSourcesUnverified: "Myndigheter og lover hentes fra en fast liste, ikke fra KI-en. Listen er ikke verifisert ennå.",
+  trustInjection: "Instruksjoner som er skjult i et brev, blir ignorert.",
 };
 
 export const DICT: Record<Lang, Dict> = { en, tr, no };

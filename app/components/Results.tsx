@@ -44,6 +44,45 @@ function Citation({ quote, verified, t }: { quote: string; verified: boolean; t:
   );
 }
 
+// Shows which parts come from the AI, which from code and which from checked sources.
+function TrustCard({ analysis, verified, t }: { analysis: Analysis; verified: boolean; t: Dict }) {
+  const quoted = [...analysis.sender_request, ...analysis.important_points, ...analysis.dates];
+  const ok = quoted.filter((q) => q.quote_verified).length;
+  const allOk = ok === quoted.length;
+  const lines: { icon: IconName; text: string; tone?: "ok" | "warn" }[] = [
+    { icon: "file", text: t.trustAi },
+    ...(quoted.length > 0
+      ? [{ icon: allOk ? "check" : "alert", text: allOk ? t.trustQuotes(ok, quoted.length) : `${t.trustQuotes(ok, quoted.length)} ${t.trustQuotesMissing}`, tone: allOk ? "ok" : "warn" } as const]
+      : []),
+    { icon: "calendar", text: t.trustDeadlines },
+    { icon: "landmark", text: verified ? t.trustSourcesVerified : t.trustSourcesUnverified },
+    { icon: "shield", text: t.trustInjection },
+  ];
+  return (
+    <section className="rounded-xl border border-rule bg-card p-5">
+      <h2 className="mb-3 flex items-center gap-2.5 font-serif text-lg font-semibold text-ink">
+        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-brass-soft text-brass">
+          <Icon name="shield" className="h-4 w-4" />
+        </span>
+        {t.secTrust}
+      </h2>
+      <ul className="space-y-2.5">
+        {lines.map((line, i) => (
+          <li key={i} className="flex gap-2.5 text-sm leading-snug">
+            <Icon
+              name={line.icon}
+              className={`mt-0.5 h-4 w-4 shrink-0 ${line.tone === "ok" ? "text-ok" : line.tone === "warn" ? "text-urgent" : "text-brass"}`}
+            />
+            <span className={line.tone === "ok" ? "font-medium text-ok" : line.tone === "warn" ? "font-medium text-urgent" : "text-ink-soft"}>
+              {line.text}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function Countdown({ days, t }: { days: number; t: Dict }) {
   const label = days < 0 ? t.daysAgo(-days) : days === 0 ? t.today : days === 1 ? t.tomorrow : t.daysLeft(days);
   const tone = days <= 7 ? "bg-urgent text-white" : "bg-ink text-white";
@@ -273,6 +312,8 @@ export function Results({ analysis, lang, language, onReset }: {
               </details>
             </div>
           </section>
+
+          <TrustCard analysis={analysis} verified={knowledge.verified} t={t} />
         </aside>
 
         <div className="space-y-5 lg:col-start-1">
