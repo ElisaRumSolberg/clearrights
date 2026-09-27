@@ -49,7 +49,6 @@ export async function POST(request: Request) {
   } else {
     return error("Upload a file or paste the text of the letter.", 400);
   }
-  parts.push({ text: "Analyze this document." });
 
   let model: ModelAnalysis;
   try {
