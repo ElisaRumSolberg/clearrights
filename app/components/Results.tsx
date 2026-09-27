@@ -394,6 +394,7 @@ export function Results({ analysis, lang, language, onReset }: {
               sender={analysis.sender}
               documentText={analysis.document_text}
               deadline={draftDeadline}
+              deadlineLabel={draftDeadline ? dateFormat.format(parseIsoDate(draftDeadline)!) : null}
             />
           </Section>
 

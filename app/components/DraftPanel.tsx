@@ -13,6 +13,7 @@ type Props = {
   sender: string;
   documentText: string;
   deadline: string | null;
+  deadlineLabel: string | null; // formatted by Results, from lib/deadline.ts
 };
 
 function CopyButton({ text, t }: { text: string; t: Dict }) {
@@ -32,7 +33,7 @@ function CopyButton({ text, t }: { text: string; t: Dict }) {
   );
 }
 
-export function DraftPanel({ t, language, category, sender, documentText, deadline }: Props) {
+export function DraftPanel({ t, language, category, sender, documentText, deadline, deadlineLabel }: Props) {
   const purposes: Purpose[] =
     category === "debt_collection" ? ["object", "more_info", "more_time", "payment_plan"] : ["object", "more_info", "more_time"];
   const [purpose, setPurpose] = useState<Purpose>("object");
@@ -80,6 +81,13 @@ export function DraftPanel({ t, language, category, sender, documentText, deadli
             <summary className="cursor-pointer text-sm font-semibold text-ink">{t.draftTranslation}</summary>
             <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-ink-soft">{draft.translation}</p>
           </details>
+        )}
+
+        {deadlineLabel && (
+          <p className="mt-4 flex items-center gap-2 rounded-md bg-urgent-soft px-3 py-2 text-sm font-semibold text-urgent">
+            <Icon name="calendar" className="h-4 w-4 shrink-0" />
+            {t.draftSendBefore(deadlineLabel)}
+          </p>
         )}
 
         {draft.notes.length > 0 && (

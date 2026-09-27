@@ -33,6 +33,10 @@ A general chatbot can summarise a PDF, but it may invent laws, calculate dates w
 | **Reply draft in Norwegian** | Object, ask for documents, ask for more time, or ask for a payment plan, with a translation into your language. |
 | **Printable summary** | A summary to print or save as PDF and bring to a legal aid appointment. |
 
+## Why Norway first
+
+The main promise of ClearRights is that facts about the law come from sources that have been checked, not from the AI. Norway is where we could verify every authority and law section by hand, so that is where we started. Apart from that and one line in the AI instructions, the system is not tied to Norway: deadline calculation, quote checking, the AI-instruction warning and explanations in 10 languages work the same way for any country. Reply drafts are written in Norwegian today; supporting another country's language would be one more setting. Adding a country means writing and verifying one knowledge file. The knowledge file for Norway is [`lib/knowledge.ts`](lib/knowledge.ts).
+
 ## How it works
 
 ```mermaid
