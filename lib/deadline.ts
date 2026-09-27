@@ -11,21 +11,29 @@ export type ResolvedDeadline =
       reason: "unreadable" | "no_period" | "need_received" | "no_document_date" | "unknown_anchor";
     };
 
+/** Parses YYYY-MM-DD. Rejects dates that don't exist (e.g. 2026-02-31) instead of rolling them over. */
 export function parseIsoDate(value: string | null | undefined): Date | null {
   if (!value) return null;
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
   if (!match) return null;
-  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  return Number.isNaN(date.getTime()) ? null : date;
+  const [y, m, d] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  if (y < 1990 || y > 2100) return null;
+  const date = new Date(y, m - 1, d);
+  if (date.getFullYear() !== y || date.getMonth() !== m - 1 || date.getDate() !== d) return null;
+  return date;
 }
 
 function addPeriod(start: Date, amount: number, unit: "days" | "weeks" | "months"): Date {
-  const result = new Date(start);
-  if (unit === "days") result.setDate(result.getDate() + amount);
-  if (unit === "weeks") result.setDate(result.getDate() + amount * 7);
-  if (unit === "months") result.setMonth(result.getMonth() + amount);
-  return result;
+  if (unit === "days") return new Date(start.getFullYear(), start.getMonth(), start.getDate() + amount);
+  if (unit === "weeks") return new Date(start.getFullYear(), start.getMonth(), start.getDate() + amount * 7);
+  // Months: same day of the month, or the last day if that month is shorter
+  // (31 January + 1 month = 28/29 February, not 3 March).
+  const target = new Date(start.getFullYear(), start.getMonth() + amount, 1);
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+  return new Date(target.getFullYear(), target.getMonth(), Math.min(start.getDate(), lastDay));
 }
+
+const MAX_DAYS = { days: 3650, weeks: 520, months: 120 };
 
 export function resolveDeadline(
   item: ExtractedDate,
@@ -37,7 +45,14 @@ export function resolveDeadline(
     return date ? { status: "fixed", date } : { status: "needs_date", reason: "unreadable" };
   }
 
-  if (!item.amount || !item.unit) {
+  if (
+    !item.unit ||
+    !(item.unit in MAX_DAYS) ||
+    !Number.isInteger(item.amount) ||
+    !item.amount ||
+    item.amount < 1 ||
+    item.amount > MAX_DAYS[item.unit]
+  ) {
     return { status: "needs_date", reason: "no_period" };
   }
 

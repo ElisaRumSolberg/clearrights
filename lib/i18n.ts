@@ -70,7 +70,7 @@ const en = {
   reasons: {
     unreadable: "The date in the letter could not be read reliably.",
     no_period: "The deadline wording could not be converted to a period.",
-    need_received: "Enter the date you received the letter.",
+    need_received: "Enter the date you received the letter (above) to see this deadline.",
     no_document_date: "The letter's own date is missing.",
     unknown_anchor: "Check the letter to see when this period starts.",
   },
@@ -123,7 +123,9 @@ const en = {
   trustDeadlines: "Dates are calculated by ClearRights from the letter's wording, not by the AI.",
   trustSourcesVerified: "Authorities and laws come from a list we checked by hand. The AI only picks the type of letter.",
   trustSourcesUnverified: "Authorities and laws come from a fixed list, not from the AI. This list has not been verified yet.",
-  trustInjection: "Instructions hidden inside a letter are ignored.",
+  trustInjection: "The AI is instructed to ignore instructions hidden inside a letter. It did so in all our tests, but this is not a guarantee.",
+  aiWarningTitle: "This letter contains text addressed to an AI system",
+  aiWarningText: "Someone may be trying to influence tools like ClearRights. Read the original letter carefully and check the explanation against it.",
 };
 
 export type Dict = typeof en;
@@ -184,7 +186,7 @@ const tr: Dict = {
   reasons: {
     unreadable: "Mektuptaki tarih güvenilir şekilde okunamadı.",
     no_period: "Süre ifadesi bir zaman aralığına çevrilemedi.",
-    need_received: "Mektubu aldığınız tarihi girin.",
+    need_received: "Bu son tarihi görmek için yukarıya mektubu aldığınız tarihi girin.",
     no_document_date: "Mektubun kendi tarihi eksik.",
     unknown_anchor: "Sürenin ne zaman başladığını mektuptan kontrol edin.",
   },
@@ -237,7 +239,9 @@ const tr: Dict = {
   trustDeadlines: "Tarihleri yapay zekâ değil, ClearRights mektuptaki ifadeden hesaplar.",
   trustSourcesVerified: "Kurumlar ve kanunlar elle kontrol ettiğimiz bir listeden gelir. Yapay zekâ yalnızca mektubun türünü seçer.",
   trustSourcesUnverified: "Kurumlar ve kanunlar yapay zekâdan değil, sabit bir listeden gelir. Bu liste henüz doğrulanmadı.",
-  trustInjection: "Mektubun içine gizlenmiş talimatlar görmezden gelinir.",
+  trustInjection: "Yapay zekâya, mektubun içine gizlenmiş talimatları görmezden gelmesi söylenir. Testlerimizin hepsinde bunu yaptı, ama bu bir garanti değildir.",
+  aiWarningTitle: "Bu mektup bir yapay zekâ sistemine yönelik metin içeriyor",
+  aiWarningText: "Birisi ClearRights gibi araçları yönlendirmeye çalışıyor olabilir. Mektubun aslını dikkatle okuyun ve açıklamayı onunla karşılaştırın.",
 };
 
 const no: Dict = {
@@ -296,7 +300,7 @@ const no: Dict = {
   reasons: {
     unreadable: "Datoen i brevet kunne ikke leses sikkert.",
     no_period: "Fristen kunne ikke gjøres om til en periode.",
-    need_received: "Skriv inn datoen du mottok brevet.",
+    need_received: "Skriv inn datoen du mottok brevet (over) for å se denne fristen.",
     no_document_date: "Brevets egen dato mangler.",
     unknown_anchor: "Sjekk brevet for når fristen begynner å løpe.",
   },
@@ -349,7 +353,9 @@ const no: Dict = {
   trustDeadlines: "Datoene beregnes av ClearRights ut fra ordlyden i brevet, ikke av KI-en.",
   trustSourcesVerified: "Myndigheter og lover hentes fra en liste vi har kontrollert manuelt. KI-en velger bare hvilken type brev det er.",
   trustSourcesUnverified: "Myndigheter og lover hentes fra en fast liste, ikke fra KI-en. Listen er ikke verifisert ennå.",
-  trustInjection: "Instruksjoner som er skjult i et brev, blir ignorert.",
+  trustInjection: "KI-en er instruert til å ignorere instruksjoner som er skjult i et brev. Det gjorde den i alle testene våre, men det er ingen garanti.",
+  aiWarningTitle: "Dette brevet inneholder tekst rettet mot et KI-system",
+  aiWarningText: "Noen kan prøve å påvirke verktøy som ClearRights. Les originalbrevet nøye og sjekk forklaringen mot det.",
 };
 
 export const DICT: Record<Lang, Dict> = { en, tr, no };

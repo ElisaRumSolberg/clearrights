@@ -95,7 +95,9 @@ export function Results({ analysis, lang, language, onReset }: {
   language: string;
   onReset: () => void;
 }) {
-  const [receivedDate, setReceivedDate] = useState(toIsoDate(new Date()));
+  // Empty until the user enters it: defaulting to today would show a wrong
+  // deadline for a letter that arrived earlier.
+  const [receivedDate, setReceivedDate] = useState("");
   const [done, setDone] = useState<Set<number>>(new Set());
   const t = DICT[lang];
   const dateFormat = new Intl.DateTimeFormat(LOCALE[lang], { day: "numeric", month: "long", year: "numeric" });
@@ -127,7 +129,7 @@ export function Results({ analysis, lang, language, onReset }: {
         <p className="font-serif text-2xl font-semibold text-ink">ClearRights — {t.printTitle}</p>
         <p className="mt-1 text-sm text-ink-soft">
           {t.printMeta(dateFormat.format(new Date()))}
-          {needsReceivedDate && ` ${t.receivedOn(dateFormat.format(parseIsoDate(receivedDate) ?? new Date()))}.`}
+          {needsReceivedDate && parseIsoDate(receivedDate) && ` ${t.receivedOn(dateFormat.format(parseIsoDate(receivedDate)!))}.`}
         </p>
       </div>
 
@@ -170,6 +172,16 @@ export function Results({ analysis, lang, language, onReset }: {
         </dl>
       </div>
 
+      {analysis.ai_instructions_detected && (
+        <div role="alert" className="mb-5 flex gap-3 rounded-xl border border-urgent/40 bg-urgent-soft p-4 text-urgent">
+          <Icon name="alert" className="mt-0.5 h-5 w-5 shrink-0" />
+          <div>
+            <p className="font-semibold">{t.aiWarningTitle}</p>
+            <p className="mt-0.5 text-sm text-ink">{t.aiWarningText}</p>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_370px] lg:items-start">
         <Section title={t.secMeaning} icon="file" className="lg:col-start-1">
           <p className="text-[17px] leading-relaxed text-ink">{analysis.summary}</p>
@@ -184,11 +196,14 @@ export function Results({ analysis, lang, language, onReset }: {
               </div>
               <div className="p-5">
                 {needsReceivedDate && (
-                  <label className="mb-5 block rounded-lg bg-paper p-3 text-sm text-ink">
+                  <label
+                    className={`mb-5 block rounded-lg p-3 text-sm text-ink ${receivedDate ? "bg-paper" : "bg-brass-soft ring-2 ring-brass/60"}`}
+                  >
                     <span className="font-medium">{t.receivedQuestion}</span>
                     <input
                       type="date"
                       value={receivedDate}
+                      max={toIsoDate(new Date())}
                       onChange={(e) => setReceivedDate(e.target.value)}
                       className="mt-1.5 block w-full rounded-md border border-rule bg-card px-2.5 py-1.5 focus:border-brass focus:outline-none"
                     />

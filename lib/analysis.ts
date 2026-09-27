@@ -42,6 +42,8 @@ export type Analysis = Omit<ModelAnalysis, "sender_request" | "important_points"
   sender_request: (QuotedItem & { quote_verified: boolean })[];
   important_points: (QuotedItem & { quote_verified: boolean })[];
   dates: (ExtractedDate & { quote_verified: boolean })[];
+  // Found by lib/injection.ts, independent of the model.
+  ai_instructions_detected: boolean;
 };
 
 const quoted = {

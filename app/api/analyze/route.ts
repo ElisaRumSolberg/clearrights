@@ -4,6 +4,7 @@ import { createClient, generateJson } from "@/lib/gemini";
 import { isCategory } from "@/lib/knowledge";
 import { buildSystemPrompt } from "@/lib/prompt";
 import { allow, clientIp } from "@/lib/rateLimit";
+import { containsAiInstructions } from "@/lib/injection";
 import { quoteAppearsIn } from "@/lib/verifyQuote";
 
 export const runtime = "nodejs";
@@ -72,6 +73,7 @@ export async function POST(request: Request) {
     ...model,
     category: isCategory(model.category) ? model.category : "other",
     document_text: sourceText,
+    ai_instructions_detected: containsAiInstructions(sourceText),
     sender_request: verify(model.sender_request),
     important_points: verify(model.important_points),
     dates: verify(model.dates),
